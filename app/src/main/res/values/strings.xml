@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TweekAssignApp</string>
+    <string name="add_item">Add New Item +</string>
+    <string name="new_item">New Item  …</string>
+</resources>
