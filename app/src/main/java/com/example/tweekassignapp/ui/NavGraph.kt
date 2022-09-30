@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.tweekassignapp.cat.CatScreen
 
 @Composable
 fun NavGraph(
@@ -29,7 +30,18 @@ fun NavGraph(
              NewsScreen()
         }
          composable(route = Screen.Account.route) {
-             AccountScreen()
+             AccountScreen(navController)
+        }
+
+
+
+
+        composable(route = Screen.List100.route) {
+            ItemsList100()
+        }
+
+        composable(route = Screen.Cat.route) {
+            CatScreen()
         }
 
     }

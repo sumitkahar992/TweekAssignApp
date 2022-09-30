@@ -6,10 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
@@ -25,17 +22,46 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 
 @Composable
-fun AccountScreen() {
-    val list = (1..100).map { it.toString() }
-    val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
+fun AccountScreen(navController : NavController) {
 
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Button(onClick = { navController.navigate(Screen.List100.route) }) {
+            Text(text = "I T E M L I S T 100")
+        }
+
+        Button(onClick = { navController.navigate(Screen.Cat.route) }) {
+            Text(text = "C A T S C R E E N")
+        }
+
+
+    }
+
+}
+
+
+@Composable
+fun ItemsList100() {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+
+        val list = (1..100).map { it.toString() }
+        val listState = rememberLazyListState()
+        val coroutineScope = rememberCoroutineScope()
+
+
+
         LazyColumn(
             state = listState,
             modifier = Modifier

@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -19,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 import com.example.tweekassignapp.R
 import com.example.tweekassignapp.tools.DataProvider
 import com.example.tweekassignapp.tools.Ext.color
@@ -27,6 +29,7 @@ import com.example.tweekassignapp.tools.Ext.round
 @Composable
 fun MyKitScreen() {
 
+    val navController = rememberNavController()
     val person = remember {
         DataProvider.tweetList
     }
@@ -67,6 +70,7 @@ fun MyKitScreen() {
                     IconBtn(resIcon = R.drawable.ic_search)
                 }
             )
+
 
 
         }
