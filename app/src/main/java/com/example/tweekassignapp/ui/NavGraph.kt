@@ -10,7 +10,7 @@ import com.example.tweekassignapp.cat.CatScreen
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues = PaddingValues()
 ) {
     NavHost(
         navController = navController,
@@ -24,7 +24,7 @@ fun NavGraph(
             MyKitScreen()
         }
          composable(route = Screen.Leaderboard.route) {
-            BottoSheetTwo()
+            LeaderBoardScreen()
         }
          composable(route = Screen.News.route) {
              NewsScreen()

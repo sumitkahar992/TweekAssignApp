@@ -30,7 +30,7 @@ data class MockyModelItem(
 
 )
 
-val dummyData = MockyModelItem(
+fun dummyData() =  MockyModelItem(
     bfc = 88,
     ffc = 77,
     id = "01XC",

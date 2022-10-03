@@ -1,5 +1,6 @@
 package com.example.tweekassignapp.data.repository
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.tweekassignapp.common.BaseApiResponse
 import com.example.tweekassignapp.common.NetworkResult
 import com.example.tweekassignapp.data.api.ApiService
@@ -15,8 +16,8 @@ class MainRepository @Inject constructor(
     private val apiService: ApiService,
     private val defaultDispatcher: CoroutineDispatcher
 ) : BaseApiResponse()
-{
-    suspend fun getPlayer() : NetworkResult<List<MockyModelItem>> {
+{                                          // arrayListOf       //mutableListOf
+    suspend fun getPlayer() : NetworkResult<SnapshotStateList<MockyModelItem>> {
         return withContext(defaultDispatcher) { safeApiCall { apiService.getPlayer() } }
     }
 

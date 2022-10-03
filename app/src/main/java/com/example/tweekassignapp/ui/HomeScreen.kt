@@ -1,28 +1,36 @@
 package com.example.tweekassignapp.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
+import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,22 +44,112 @@ import com.example.tweekassignapp.data.model.MockyModelItem
 import com.example.tweekassignapp.viewmodel.TweekViewModel
 import kotlinx.coroutines.launch
 
-
 @Composable
 fun HomeContent() {
 
-    val tweekViewModel: TweekViewModel = hiltViewModel()
+    HomeContentScreen()
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+}
+
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun HomeContentScreen() {
+
+    val viewModel: TweekViewModel = hiltViewModel()
+
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded }
+    )
+//    val coroutineScope = rememberCoroutineScope()
+
+    BackHandler(sheetState.isVisible) {
+        coroutineScope.launch { sheetState.hide() }
+    }
+
+    ModalBottomSheetLayout(
+        sheetState = sheetState,
+        sheetContent = { BottomSheet() },
+        modifier = Modifier.fillMaxSize()
     ) {
-        if (tweekViewModel.snapshotStateList.isEmpty()) {
-            LoadingState()
-        } else {
 
-            MainContent(playerList = tweekViewModel.snapshotStateList)
+        val isTopButtonVisible = remember {
+            derivedStateOf {
+                listState.firstVisibleItemIndex > 0
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            if (viewModel.snapshotStateList.isEmpty()) {
+                LoadingState()
+            } else {
+
+                Box {
+
+                    MainContent(playerList = viewModel.snapshotStateList, listState = listState)
+
+
+                    FloatingActionButton(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(horizontal = 16.dp, vertical = 57.dp),
+                        onClick = {
+                            coroutineScope.launch {
+                                if (isTopButtonVisible.value) {
+                                    listState.animateScrollToItem(0)
+                                } else {
+                                    listState.animateScrollToItem(viewModel.snapshotStateList.size - 1)
+                                }
+                            }
+                        },
+
+                        ) {
+                        if (isTopButtonVisible.value) {
+                            Icon(
+                                imageVector = Icons.Rounded.KeyboardArrowUp,
+                                contentDescription = ""
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Rounded.KeyboardArrowDown,
+                                contentDescription = ""
+                            )
+                        }
+                    }
+
+                    FloatingActionButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomEnd),
+                        shape = RectangleShape,
+                        backgroundColor = Color.White,
+                        contentColor = Color.DarkGray,
+                        onClick = {
+                            coroutineScope.launch {
+                                if (sheetState.isVisible) sheetState.hide()
+                                else sheetState.show()
+                            }
+                        }) {
+                        SortBycard()
+
+
+                    }
+
+
+                }
+
+            }
 
         }
     }
@@ -72,19 +170,7 @@ fun LoadingState() {
 
 
 @Composable
-fun MainContent(
-    playerList: SnapshotStateList<MockyModelItem>,
-    paddingValues: PaddingValues = PaddingValues()
-) {
-    val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-
-    val isTopButtonVisible = remember {
-        derivedStateOf {
-            listState.firstVisibleItemIndex > 0
-        }
-    }
-
+fun MainContent(playerList: List<MockyModelItem>, listState: LazyListState) {
 
     LazyColumn(
         state = listState,
@@ -98,37 +184,10 @@ fun MainContent(
             }
         )
 
-
-
-        item {
-            FloatingActionButton(
-                onClick = {
-                    coroutineScope.launch {
-                        if (isTopButtonVisible.value) {
-                            listState.animateScrollToItem(0)
-                        } else {
-                            listState.animateScrollToItem(playerList.size - 1)
-                        }
-                    }
-                },
-
-                ) {
-                if (isTopButtonVisible.value) {
-                    Icon(Icons.Outlined.Refresh, "")
-                } else {
-                    Icon(Icons.Outlined.Refresh, "")
-                }
-
-
-            }
-
-
-        }
     }
 
 
 }
-
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -293,7 +352,7 @@ fun PlayerCard(tweekModel: MockyModelItem) {
 }
 
 @Composable
-private fun CreateImageProfile(modifier: Modifier = Modifier) {
+fun CreateImageProfile(modifier: Modifier = Modifier, image: Int = R.drawable.profile_image2) {
     Surface(
         modifier = Modifier
             .size(75.dp)
@@ -304,13 +363,42 @@ private fun CreateImageProfile(modifier: Modifier = Modifier) {
         color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.profile_image2),
+            painter = painterResource(id = image),
             contentDescription = "profile image",
             modifier = modifier.size(135.dp),
             contentScale = ContentScale.Crop
         )
 
     }
+}
+
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun SortBycard() {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                modifier = Modifier.size(25.dp),
+                painter = painterResource(id = R.drawable.sortby),
+                contentDescription = null
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column {
+                Text(text = "Sort By", fontWeight = FontWeight.Bold)
+                Text(text = "score", fontSize = 12.sp)
+            }
+        }
+
+
+
 }
 
 

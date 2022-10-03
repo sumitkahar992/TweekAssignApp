@@ -1,42 +1,46 @@
 package com.example.tweekassignapp.ui
 
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tweekassignapp.R
-import com.example.tweekassignapp.tools.DataProvider
 import com.example.tweekassignapp.tools.Ext.color
 import com.example.tweekassignapp.tools.Ext.round
+import com.example.tweekassignapp.viewmodel.TweekViewModel
+import kotlin.text.Typography
 
 @Composable
 fun MyKitScreen() {
 
-    val navController = rememberNavController()
-    val person = remember {
-        DataProvider.tweetList
-    }
-    val scrollState = rememberLazyGridState()
+    val viewModel: TweekViewModel = hiltViewModel()
+
 
     Box {
-        Column {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(state = rememberScrollState())
+        ) {
             TopBar(
                 navigationIcon = {
                     Box(
@@ -71,14 +75,84 @@ fun MyKitScreen() {
                 }
             )
 
+            Divider()
+
+
+
+//                element.forEach{
+//                   Text(text = "Number : ${it}")
+//                }
+
+            viewModel.cards.forEach {
+                SimpleCard(
+                    id = it.id,
+                    image = it.image,
+                    name = it.developer)
+            }
 
 
         }
+
+        val context = LocalContext.current
+
+        FloatingActionButton(
+            modifier = Modifier
+                .padding(vertical = 70.dp, horizontal = 16.dp)
+                .align(Alignment.BottomEnd),
+            onClick = {
+                viewModel.generateRandomCard()
+
+                viewModel.cards.forEach{
+                    Toast.makeText(context,"Item Added  - ${it.id}", Toast.LENGTH_SHORT).show()
+                }
+
+        }) {}
 
 
     }
 
 
+}
+
+@Composable
+fun SimpleCard(
+    id: Int,
+    image: Int,
+    name: String
+) {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CreateImageProfile(image = image)
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Text(text = name, modifier = Modifier.weight(1f), style = MaterialTheme.typography.h6 )
+
+            Spacer(modifier = Modifier.width(140.dp))
+
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                    .size(40.dp)
+                    .round(null, 100)
+                    .color(Color.Blue)
+
+            ) {
+                Text(
+                    text = "$id",
+                    modifier = Modifier.align(Alignment.Center),
+                    fontSize = 17.sp,
+                    color = Color.White
+                )
+            }
+
+        }
+    }
 }
 
 

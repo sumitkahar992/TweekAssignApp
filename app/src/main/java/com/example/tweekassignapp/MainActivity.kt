@@ -3,19 +3,20 @@ package com.example.tweekassignapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.tweekassignapp.app.theme.TweekAssignAppTheme
-import com.example.tweekassignapp.ui.AppBar
-import com.example.tweekassignapp.ui.BottomBar
-import com.example.tweekassignapp.ui.NavGraph
-import com.example.tweekassignapp.ui.Screen
+import com.example.tweekassignapp.ui.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,15 +48,15 @@ fun MyApp() {
 //            AppBar()
                  },
         bottomBar = {
-            Column {
                 BottomBar(
                     navController = navController,
-                    bottomBarState = bottomBarState.value
-                )
-            }
+                    bottomBarState = bottomBarState.value)
         },
-        content = {
-            NavGraph(navController = navController, paddingValues = it)
+        content = { Padding ->
+            Column(modifier = Modifier.padding(Padding)) {
+                NavGraph(navController = navController)
+            }
+
         }
     )
 }
