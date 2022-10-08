@@ -1,6 +1,5 @@
 package com.example.tweekassignapp.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
@@ -26,9 +25,8 @@ class TweekViewModel @Inject constructor(
         getPlayer()
     }
 
-    val _snapshotStateList = mutableStateListOf<MockyModelItem>()
+    private val _snapshotStateList = mutableStateListOf<MockyModelItem>()
     val snapshotStateList: List<MockyModelItem> = _snapshotStateList
-
 
 
     private fun getPlayer() = viewModelScope.launch {
@@ -41,78 +39,44 @@ class TweekViewModel @Inject constructor(
 
             }
         }
+    }
 
+    fun sortMocky(): List<MockyModelItem> {
+        _snapshotStateList.sortByDescending { it.score }
+        return snapshotStateList
     }
 
 
-    private val _elements = mutableStateListOf<Int>()
-    val element : List<Int> = _elements
-
-
-    fun onAdd() {
-        val randomNumber = Random.nextInt(0,100)
-        _elements.add(randomNumber)
-
-
-        Log.d("TAG", "Added Number : $_snapshotStateList")
-    }
 
 
 
 
 
     private val _cards = mutableStateListOf<SimpleData>()
-    val cards : List<SimpleData> = _cards
+    val cards: List<SimpleData> = _cards
 
     private fun onAddCard(): List<SimpleData> {
 
         _cards.add(
-            SimpleData(image = developerImage.random(),
+            SimpleData(
+                image = developerImage.random(),
                 developer = developerName.random(),
-                id = Random.nextInt(1,15)))
+                id = Random.nextInt(1, 15)
+            )
+        )
 
         return cards
     }
 
-    fun generateRandomCard(): SimpleData {
-        return onAddCard().random()
+    fun sortBy(): List<SimpleData> {
+        _cards.sortBy { it.id }
+        return cards
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    fun generateRandomCard(): SimpleData {
+        return onAddCard().random()
+    }
 
 
 }

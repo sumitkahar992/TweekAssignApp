@@ -6,7 +6,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -16,13 +15,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,7 +26,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,6 +53,7 @@ fun HomeContentScreen() {
 
     val viewModel: TweekViewModel = hiltViewModel()
 
+
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -65,7 +61,7 @@ fun HomeContentScreen() {
         initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded }
     )
-//    val coroutineScope = rememberCoroutineScope()
+
 
     BackHandler(sheetState.isVisible) {
         coroutineScope.launch { sheetState.hide() }
@@ -97,7 +93,11 @@ fun HomeContentScreen() {
 
                 Box {
 
-                    MainContent(playerList = viewModel.snapshotStateList, listState = listState)
+                    MainContent(
+                        playerList = viewModel.snapshotStateList,
+                        listState = listState,
+                        score = ""
+                    )
 
 
                     FloatingActionButton(
@@ -170,7 +170,7 @@ fun LoadingState() {
 
 
 @Composable
-fun MainContent(playerList: List<MockyModelItem>, listState: LazyListState) {
+fun MainContent(playerList: List<MockyModelItem>, listState: LazyListState, score: String) {
 
     LazyColumn(
         state = listState,
@@ -180,48 +180,12 @@ fun MainContent(playerList: List<MockyModelItem>, listState: LazyListState) {
         items(
             items = playerList,
             itemContent = {
-                PlayerCard(tweekModel = it)
+                PlayerCard(player = it, score = score)
             }
         )
 
     }
 
-
-}
-
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun BottoSheetTwo() {
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
-    )
-    val coroutineScope = rememberCoroutineScope()
-    BottomSheetScaffold(
-        scaffoldState = bottomSheetScaffoldState,
-        sheetContent = {
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-            ) {
-                Text(text = "Hello from sheet")
-            }
-        }, sheetPeekHeight = 0.dp
-    ) {
-        Button(onClick = {
-            coroutineScope.launch {
-
-                if (bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
-                    bottomSheetScaffoldState.bottomSheetState.expand()
-                } else {
-                    bottomSheetScaffoldState.bottomSheetState.collapse()
-                }
-            }
-        }) {
-            Text(text = "Expand/Collapse Bottom Sheet")
-        }
-    }
 
 }
 
@@ -310,7 +274,7 @@ fun BottomBar(
 
 
 @Composable
-fun PlayerCard(tweekModel: MockyModelItem) {
+fun PlayerCard(player: MockyModelItem, score: String) {
 
 
     Card(
@@ -326,7 +290,7 @@ fun PlayerCard(tweekModel: MockyModelItem) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = tweekModel.id.toInt().toString(),
+                text = player.id.toInt().toString(),
                 fontSize = 22.sp,
                 fontFamily = FontFamily.Monospace
 
@@ -334,12 +298,12 @@ fun PlayerCard(tweekModel: MockyModelItem) {
 
             CreateImageProfile()
 
-            Text(text = tweekModel.name, modifier = Modifier.weight(1f))
+            Text(text = player.name, modifier = Modifier.weight(1f))
 
             Spacer(modifier = Modifier.width(30.dp))
 
             Text(
-                text = tweekModel.score.toString(),
+                text = player.score.toString(),
                 fontSize = 16.sp,
                 fontFamily = FontFamily.Monospace,
                 maxLines = 1,
@@ -350,6 +314,7 @@ fun PlayerCard(tweekModel: MockyModelItem) {
 
 
 }
+
 
 @Composable
 fun CreateImageProfile(modifier: Modifier = Modifier, image: Int = R.drawable.profile_image2) {
@@ -370,35 +335,6 @@ fun CreateImageProfile(modifier: Modifier = Modifier, image: Int = R.drawable.pr
         )
 
     }
-}
-
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun SortBycard() {
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                modifier = Modifier.size(25.dp),
-                painter = painterResource(id = R.drawable.sortby),
-                contentDescription = null
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column {
-                Text(text = "Sort By", fontWeight = FontWeight.Bold)
-                Text(text = "score", fontSize = 12.sp)
-            }
-        }
-
-
-
 }
 
 

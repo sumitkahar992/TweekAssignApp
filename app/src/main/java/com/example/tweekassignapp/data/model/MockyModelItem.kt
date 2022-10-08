@@ -28,7 +28,11 @@ data class MockyModelItem(
     @field:SerializedName("score")
     val score: Int
 
-)
+){
+    override fun toString(): String {
+        return "$bfc, $ffc, $id, $jump, $name, $release, $runup, $score"
+    }
+}
 
 fun dummyData() =  MockyModelItem(
     bfc = 88,
