@@ -15,4 +15,7 @@ sealed class Screen(val route: String) {
 
     object List100 : Screen("list_100")
     object Cat : Screen("cat_screen")
+
+    object TempConverter : Screen("temp_converter")
+    object ResultScreen : Screen("result_screen")
 }
