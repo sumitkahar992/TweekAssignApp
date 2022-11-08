@@ -53,9 +53,9 @@ fun HomeContentScreen() {
 
     val viewModel: TweekViewModel = hiltViewModel()
 
-
-    val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+
 
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,

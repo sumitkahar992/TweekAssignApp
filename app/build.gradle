@@ -68,13 +68,17 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
-    implementation "io.coil-kt:coil-compose:2.2.0"
+    implementation "io.coil-kt:coil-compose:2.2.2"
 
     //Navigation
-    implementation "androidx.navigation:navigation-compose:2.5.2"
+    implementation "androidx.navigation:navigation-compose:2.5.3"
 
 
+    //Horizontal Pager
+    implementation "com.google.accompanist:accompanist-pager:0.27.0"
 
+    // If using indicators, also depend on
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.27.0"
 
 
 
@@ -86,7 +90,7 @@ dependencies {
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
-    implementation 'androidx.activity:activity-compose:1.5.1'
+    implementation 'androidx.activity:activity-compose:1.6.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

@@ -1,6 +1,11 @@
 package com.example.tweekassignapp.ui
 
-sealed class Screen(val route: String){
+import androidx.compose.runtime.Composable
+
+
+typealias ComposableFunction = @Composable () -> Unit
+
+sealed class Screen(val route: String) {
 
     object News : Screen("news_screen")
     object MyKits : Screen("my kits_screen")
@@ -8,6 +13,6 @@ sealed class Screen(val route: String){
     object Leaderboard : Screen("leaderboard_screen")
     object Account : Screen("account_screen")
 
-    object List100: Screen("list_100")
+    object List100 : Screen("list_100")
     object Cat : Screen("cat_screen")
 }
